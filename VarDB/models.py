@@ -19,7 +19,7 @@ class Investigation(models.Model):
     investigation = models.ForeignKey(Occurrence, on_delete=models.CASCADE)
     platform = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
-    investigation_date = models.DateTimeField('date investigated')
+    investigation_date = models.DateTimeField(help_text='date investigated')
 		
 class Gene(models.Model):
     gene = models.ForeignKey(Investigation, on_delete=models.CASCADE)
@@ -29,9 +29,10 @@ class Refseq(models.Model):
     refseq = models.ForeignKey(Gene, on_delete=models.CASCADE)
     reference = models.CharField(max_length=50)
 
-# class Variant(models.Model):
-    # variant = models.ForeignKey(Refseq, on_delete=models.CASCADE)
-    # cDNA = models.CharField(max_length=200)
-    # protein = models.CharField(max_length=200)
-    # genome = models.CharField(default=0, max_length=200)
-	
+class Variant(models.Model):
+    variant = models.ForeignKey(Refseq, on_delete=models.CASCADE)
+    cDNA = models.CharField(max_length=200)
+    protein = models.CharField(null = True, max_length=200)
+    genome = models.CharField(null = True, max_length=200)
+    pathogenicity = models.IntegerField(null = True)
+    date_classified = models.DateTimeField(null = True, help_text='Date classified')
