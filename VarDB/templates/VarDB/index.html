@@ -1,0 +1,13 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'VarDB/welcome.css' %}" />
+
+{% if patient_list %}
+    <ul>
+    {% for patient in patient_list %}
+        <li><a href="/polls/{{ patient.id }}/">{{ patient.surname }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No patients are available.</p>
+{% endif %}
