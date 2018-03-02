@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% load render_table from django_tables2 %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <title>BRCA VarDb</title>
+</head>
+<body>
+    <h1>BRCA1 Patients</h1>
+    <p>
+	
+	{% render_table data 'django_tables2/bootstrap.html' %}
+	
+
+    </p>
+</body>
+</html>

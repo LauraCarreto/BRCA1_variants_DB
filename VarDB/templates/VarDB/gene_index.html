@@ -1,0 +1,13 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'VarDB/index.css' %}" />
+
+{% if gene_list %}
+    <ul>
+    {% for gene in gene_list %}
+		<li><a href="/VarDB/{{gene.symbol}}/">{{ gene.symbol }}</a></li>
+    {% endfor %}
+	</ul>
+{% else %}
+    <p>No genes are available.</p>
+{% endif %}

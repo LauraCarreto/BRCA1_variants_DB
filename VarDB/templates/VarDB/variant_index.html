@@ -1,0 +1,13 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'VarDB/index.css' %}" />
+
+{% if variant_list %}
+    <ul>
+    {% for variant in variant_list %}
+        <li><a href="/VarDB/BRCA1/NM_007294.3/{{ variant.id }}/">{{ variant.cDNA }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No variants are available.</p>
+{% endif %}

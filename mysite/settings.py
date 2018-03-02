@@ -30,11 +30,12 @@ ALLOWED_HOSTS = []
 #media
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
+ADMIN_MEDIA_PREFIX = '/media/'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'django_tables2',
 	'VarDB.apps.VardbConfig',
     'django.contrib.admin',
     'django.contrib.auth',
