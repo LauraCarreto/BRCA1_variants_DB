@@ -1,0 +1,37 @@
+
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'VarDB/details.css' %}" />
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <title>Variant details</title>
+</head>
+<body>
+    <h2>Variant details</h2>
+
+	{% if variant_details %}
+        <t>c.DNA change: </t>
+			<c>{{ variant_details.cDNA }}</t>
+			<p><p/>
+		<t>Protein change: </t>
+		    <c>{{ variant_details.protein }}</c>
+			<p><p/>
+		<t>Genomic coordinate: </t>
+		    <c>{{ variant_details.genome }}</c>
+			<p><p/>
+		<t>Pathogenicity:</t>
+		{% if variant_details.pathogenicity == null %}
+		    <c>Unknown</c>
+		{% else %}
+			<c>Class {{ variant_details.pathogenicity }}</c>
+			<p>({{ variant_details.date_classified }})<p/>
+		{% endif %}
+		
+	{% else %}
+		<p>No details are available.</p>
+	{% endif %}
+</body>
+</html>

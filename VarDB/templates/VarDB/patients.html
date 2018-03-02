@@ -1,18 +1,169 @@
 <!DOCTYPE html>
-{% load render_table from django_tables2 %}
 <html lang="en">
 <head>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <meta charset="UTF-8">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <title>BRCA VarDb</title>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" />
+    <title>VarDB</title>
 </head>
 <body>
-    <h1>BRCA1 Patients</h1>
-    <p>
+
+
+
+<div class="container">
+	<h1 class = "text-success">Welcome to VarDB</h1>
 	
-	{% render_table data 'django_tables2/bootstrap.html' %}
+    <h2 class = "text-info">Patients</h2>		<span class="badge badge-pill badge-danger">There are currently {{ number }} patients in this database</span> 
+</div>
+
+
+
+
+<div class="container">
+<br>
+<h4 class = "text-info">Enter a search term below...</h4>
+<input type="text" id="searchTerm" class="search_box" onkeyup="doSearch()" />
+</div>
+
+<div class="container">	
+
+	<div class = "table-responsive">
+	<table id="myTable" class = "table table-striped" style="width:100%">
+	<thead>
+	<tr>
+		<th onclick="sortTable(0)" >Firstname</th>
+		<th onclick="sortTable(1)">Surname</th>
+		<th onclick="sortTable(2)">Age of Occurence</th>
+		<th onclick="sortTable(3)">Stage</th>
+		<th onclick="sortTable(4)">Description</th>
+		<th onclick="sortTable(5)">Sequencer</th>
+		<th onclick="sortTable(6)">Gene</th>
+		<th onclick="sortTable(7)">Transcript ID</th>
+		<th onclick="sortTable(8)">cDNA Variant</th>
+		<th onclick="sortTable(9)">Protein Variant</th>
+		<th onclick="sortTable(10)">gDNA Variant</th>
+		<th onclick="sortTable(11)">Pathogenicity Classification</th>	
+	</tr>
+	</thead>
+	{% for variant in variants %}
+	<tbody>
+	<tr>
+		<td>{{ variant.refseq.gene.investigation.occurence.patient.forename }}</td>
+		<td>{{ variant.refseq.gene.investigation.occurence.patient.surname }}</td>
+		<td>{{ variant.refseq.gene.investigation.occurence.age_occurence }}</td>
+		<td>{{ variant.refseq.gene.investigation.occurence.stage }}</td>
+		<td>{{ variant.refseq.gene.investigation.occurence.description }}</td>
+		<td>{{ variant.refseq.gene.investigation.platform }}</td>
+		<td>{{ variant.refseq.gene.symbol }}</td>
+		<td>{{ variant.refseq.reference }}</td>
+		<td>{{ variant.cDNA }}</td>
+		<td>{{ variant.protein }}</td>
+		<td>{{ variant.genome }}</td>
+		<td>{{ variant.pathogenicity }}</td>
+	</tr>
+	</tbody>
+	{% endfor %}
+		
+	</table>
+	</div>
+	</div>
 	
 
-    </p>
 </body>
+
+<script>
+$(document).ready(function() {
+    $('#myTable').DataTable();
+} );
+</script>
+
+<script>
+function sortTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("myTable");
+  switching = true;
+  // Set the sorting direction to ascending:
+  dir = "asc"; 
+  /* Make a loop that will continue until
+  no switching has been done: */
+  while (switching) {
+    // Start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /* Loop through all table rows (except the
+    first, which contains table headers): */
+    for (i = 1; i < (rows.length - 1); i++) {
+      // Start by saying there should be no switching:
+      shouldSwitch = false;
+      /* Get the two elements you want to compare,
+      one from current row and one from the next: */
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /* Check if the two rows should switch place,
+      based on the direction, asc or desc: */
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /* If a switch has been marked, make the switch
+      and mark that a switch has been done: */
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      // Each time a switch is done, increase this count by 1:
+      switchcount ++; 
+    } else {
+      /* If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again. */
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+
+<script>
+function doSearch() {
+    var searchText = document.getElementById('searchTerm').value;
+    var targetTable = document.getElementById('myTable');
+    var targetTableColCount;
+            
+    //Loop through table rows
+    for (var rowIndex = 0; rowIndex < targetTable.rows.length; rowIndex++) {
+        var rowData = '';
+
+        //Get column count from header row
+        if (rowIndex == 0) {
+           targetTableColCount = targetTable.rows.item(rowIndex).cells.length;
+           continue; //do not execute further code for header row.
+        }
+                
+        //Process data rows. (rowIndex >= 1)
+        for (var colIndex = 0; colIndex < targetTableColCount; colIndex++) {
+            rowData += targetTable.rows.item(rowIndex).cells.item(colIndex).textContent;
+        }
+
+        //If search term is not found in row data
+        //then hide the row, else show
+        if (rowData.indexOf(searchText) == -1)
+            targetTable.rows.item(rowIndex).style.display = 'none';
+        else
+            targetTable.rows.item(rowIndex).style.display = 'table-row';
+    }
+}
+</script>
 </html>

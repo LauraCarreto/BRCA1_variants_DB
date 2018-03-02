@@ -34,9 +34,6 @@ def gene_index(request):
     return HttpResponse(template.render(context, request))
 
 def refseq_index(request):
-    gene_id_list = Gene.objects.filter(symbol='BRCA1')
-	
-	
     refseq_list = Refseq.objects.values('reference').annotate(Count('id')).order_by()
     template = loader.get_template('VarDB/refseq_index.html')
     context = {
@@ -45,16 +42,34 @@ def refseq_index(request):
     return HttpResponse(template.render(context, request))
 	
 def variant_index(request):
-    variant_list = Variant.objects.order_by('cDNA')[:100]
+    variant_list = Variant.objects.order_by('cDNA')
     template = loader.get_template('VarDB/variant_index.html')
     context = {
         'variant_list': variant_list
     }
     return HttpResponse(template.render(context, request))
 	
+def variant_details(request, variant_id):
+    variant_details = Variant.objects.get(id=variant_id)
+    template = loader.get_template('VarDB/variant_details.html')
+    context = {
+        'variant_details': variant_details
+    }
+    return HttpResponse(template.render(context, request))
+	
 def index(request):
-	data = Patient.objects.all()
-	return render(request, 'VarDB/patients.html', locals())
+    number = Patient.objects.count()
+    variants = Variant.objects.all()	
+    context = {
+        'variants' : variants,
+        'number' : number,
+    }
+	
+    return render(request, 'VarDB/patients.html', context)
+	
+# def index(request):
+	# data = Patient.objects.all()
+	# return render(request, 'VarDB/patients.html', locals())
 	
 ###############################not working from here##################
 
